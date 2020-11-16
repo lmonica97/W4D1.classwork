@@ -9,21 +9,41 @@ class KnightPathFinder
                 valid_moves << [x, y] 
             end
         end
-        valid_moves
+        valid_moves #1,2 and 2,1
     end
 
     def considered_positions
-        considered_positions = [starting_pos]
+        @considered_positions = [starting_pos] #00
     end
 
-    def new_move_positions(pos)
-        # copy = KnightPathFinder.valid_moves.map(&:dup)
-        # @considered_positions.each do |position|
-        #     if copy.include?(position)
-        #         copy.delete(position)
-        #     end
-        # end
-        
+    def new_move_positions(position) 
+       self.class.valid_moves.each do |position|
+        @considered_positions << position  if !@considered_positions.include?(position)
+       end
+       @considered_positions    
+    end
+
+
+
+    class ChessTreeNode
+        def initialize(initial_pos)
+            self.build_move_tree
+        end
+    end
+
+    self.root_node
+    #stores intial knight's position as an CTN node instance --> "root"
+    ChessTreeNode.new(initial_pos)
+    end
+    
+    def build_move_tree
+        self.root_node
+        @starting_node = @considered_positions
+
+    end    
+
+    def find_path(final_position)
+        # finds the path from origin to final_pos 
     end
 
 end
