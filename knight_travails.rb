@@ -1,3 +1,5 @@
+require_relative "polytreenode/polytreenode"
+
 class KnightPathFinder
     def self.valid_moves(pos)
         possible_moves = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [-2, 1], [2, -1], [-2, -1]]
@@ -12,38 +14,32 @@ class KnightPathFinder
         valid_moves #1,2 and 2,1
     end
 
-    def considered_positions
-        @considered_positions = [starting_pos] #00
-    end
+    attr_accessor :root, :root_node, :considered_positions
+    def initialize(pos)
+        @root = pos
+        @root_node = PolyTreeNode.new(root)
+        @considered_positions = [root]
+    end   
 
     def new_move_positions(position) 
+        new_moves = []
        self.class.valid_moves.each do |position|
-        @considered_positions << position  if !@considered_positions.include?(position)
+         unless @considered_positions.include?(position)
+            new_moves << position
+            @considered_positions << position
+         end
        end
-       @considered_positions    
+       new_moves
     end
 
-
-
-    class ChessTreeNode
-        def initialize(initial_pos)
-            self.build_move_tree
-        end
-    end
-
-    self.root_node
-    #stores intial knight's position as an CTN node instance --> "root"
-    ChessTreeNode.new(initial_pos)
-    end
-    
     def build_move_tree
-        self.root_node
-        @starting_node = @considered_positions
-
+        queue = root_node
+        until queue.empty?
+            ele = queue.shift
+            new_moves.each do |move|
+                (ele).add_child(PolyTreeNode.new(move))
+            end
+            ele.children.each {|child| queue << child}
+        end
     end    
-
-    def find_path(final_position)
-        # finds the path from origin to final_pos 
-    end
-
 end
