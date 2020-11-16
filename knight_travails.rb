@@ -1,5 +1,5 @@
 require_relative "polytreenode/polytreenode"
-
+    require "byebug"
 class KnightPathFinder
     def self.valid_moves(pos)
         possible_moves = [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [-2, 1], [2, -1], [-2, -1]]
@@ -14,8 +14,9 @@ class KnightPathFinder
         valid_moves #1,2 and 2,1
     end
 
-    attr_accessor :root, :root_node, :considered_positions
+    attr_accessor :root, :root_node, :considered_positions, :valid_move
     def initialize(pos)
+        # @valid_move = KnightPathFinder.valid_moves(pos)
         @root = pos
         @root_node = PolyTreeNode.new(root)
         @considered_positions = [root]
@@ -23,7 +24,7 @@ class KnightPathFinder
 
     def new_move_positions(position) 
         new_moves = []
-       self.class.valid_moves.each do |position|
+       KnightPathFinder.valid_moves(position).each do |position|
          unless @considered_positions.include?(position)
             new_moves << position
             @considered_positions << position
@@ -33,13 +34,22 @@ class KnightPathFinder
     end
 
     def build_move_tree
-        queue = root_node
+        
+        queue = [root_node]
+
         until queue.empty?
-            ele = queue.shift
-            new_moves.each do |move|
-                (ele).add_child(PolyTreeNode.new(move))
+            next_node = queue.shift
+            
+            new_move_positions(next_node.value).each do |move|
+                child = PolyTreeNode.new(move)
+                next_node.add_child(child)
+                queue << child
             end
-            ele.children.each {|child| queue << child}
+            
+        
         end
     end    
 end
+
+#  p n = KnightPathFinder.new([0,0])
+#  p n.build_move_tree
